@@ -9,8 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "material-design-icons": "^3.0.1",
     "next": "13.4.4",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-firebase-hooks": "^5.1.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "sass": "^1.62.1"
   }
 }

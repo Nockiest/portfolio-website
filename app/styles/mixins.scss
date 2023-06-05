@@ -1,0 +1,29 @@
+@import "./variables.scss";
+
+@mixin alignedInRow($position: space-around ) {
+    display: flex;
+    justify-content: $position;
+    align-items: center; // Add align-items property to center items vertically
+  }
+
+@mixin defaultButton($bg: $clr-accent, $border: $clr-dark) {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  gap: 8px;
+  background-color: $bg;
+  border: 1px solid $border;
+  border-radius: 16px;
+
+  &:hover {
+    background-color: darken($bg, 10%);
+    cursor: pointer;
+  }
+
+  &:active {
+    background-color: lighten($bg, 10%);
+  }
+}
+  

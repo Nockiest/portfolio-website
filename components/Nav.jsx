@@ -1,62 +1,40 @@
 "use client"
 
-import { useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
-const Nav = () => {
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  const router = useRouter();
-  
-  const [isClient, setIsClient] = useState(false);
+import Link from 'next/link';
+import { useState } from 'react';
+import NavList from './NavList';
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+const Nav = ({ absolutePos }) => {
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
     console.log(isNavOpen);
   };
 
-  const handleNavLinkClick = (link) => {
-    document.body.classList.remove('nav-open');
-    if (isClient) {
-      router.push(link);
-    }
-  };
+  // Retrieve name and profilePic from localStorage
+  const name = localStorage.getItem('name');
+  const profilePic = localStorage.getItem('profilePic');
+
   return (
-    <header>
-      <div className="logo">
-        <Image src="/images/profile-pic.jpg" alt="dev And" width={100} height={100} />
+    <header className={absolutePos ? 'absolute-header' : ''}>
+      <div className={`logo ${absolutePos ? 'logo-absolute' : ''}`}>
+        <img src="https://i.postimg.cc/63Cn0Tr3/greenletter-A.jpg" alt="dev And" />
       </div>
-      <button className="nav-toggle" aria-label="toggle navigation" onClick={toggleNav}>
+      <button className={`nav-toggle ${absolutePos ? 'nav-toggle-absolute' : ''}`} aria-label="toggle navigation" onClick={toggleNav}>
         <span className="hamburger"></span>
       </button>
       <nav className={`nav ${isNavOpen ? 'nav-open' : ''}`}>
-        <ul className="nav__list">
-          <li className="nav__item">
-            <button className="nav__link" onClick={() => handleNavLinkClick('#home')}>
-              Home
-            </button>
-          </li>
-          <li className="nav__item">
-            <button className="nav__link" onClick={() => handleNavLinkClick('#services')}>
-              My Services
-            </button>
-          </li>
-          <li className="nav__item">
-            <button className="nav__link" onClick={() => handleNavLinkClick('#about')}>
-              About me
-            </button>
-          </li>
-          <li className="nav__item">
-            <button className="nav__link" onClick={() => handleNavLinkClick('#work')}>
-              My Work
-            </button>
-          </li>
-        </ul>
+        <NavList />
       </nav>
+
+      {name && profilePic && (
+        <div className="user-info">
+          <span className="user-name">{name}</span>
+          <img src={profilePic} alt="User Profile" className="profile-pic" />
+        </div>
+      )}
     </header>
   );
 };
