@@ -89,10 +89,10 @@ function CreatePost({ isAuth }) {
   const [tags, setTags] = useState([]);
   const [imageUrl, setImageUrl] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   const postsCollectionRef = collection(db, "BlogPosts");
-  // const storage = getStorage();
-  // const coverImageRef = ref(storage, "coverImages");
-  // console.log(coverImageRef)
+
   const handleTagChange = (event) => {
     const enteredTags = event.target.value.split(",").map((tag) => tag.trim());
     setTags(enteredTags);
@@ -109,47 +109,30 @@ function CreatePost({ isAuth }) {
     setSelectedTags((prevTags) => prevTags.filter((t) => t !== tag));
   };
 
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
   const createPost = async () => {
-    let downloadURL = null;
-  
-    // if (imageUrl) {
-      // Image URL is provided
-      // Upload the image URL to Firebase Storage
-    //   const response = await fetch(imageUrl);
-    //   const blob = await response.blob();
-    //   const imageName = getFileNameFromUrl(imageUrl);
-    //   // const coverImageFileRef = ref(coverImageRef, imageName);
-    //   await uploadBytes(coverImageFileRef, blob);
-    //   downloadURL = await getDownloadURL(coverImageFileRef);
-    // // } else if (coverImage) {
-    //   // File upload is performed
-    //   // Upload the cover image file to Firebase Storage
-    //   const coverImageFileRef = ref(coverImageRef, coverImage.name);
-    //   await uploadBytes(coverImageFileRef, coverImage);
-    //   downloadURL = await getDownloadURL(coverImageFileRef);
-    // // }
-  
     // Create the blog post document
     await addDoc(postsCollectionRef, {
       title,
       postText,
       tags: tags,
+      category: selectedCategory,
       author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
-      // coverImage: downloadURL,
     });
-  
+
     // Clear input fields
     setTitle("");
     setPostText("");
     setSelectedTags([]);
-    // setImageUrl("");
-  
+    setSelectedCategory("");
+
     // Show alert with post contents
-    const alertMessage = `Post Title: ${title}\nPost Text: ${postText}\nTags: ${selectedTags.join(", ")}`;
+    const alertMessage = `Post Title: ${title}\nPost Text: ${postText}\nTags: ${selectedTags.join(", ")}\nCategory: ${selectedCategory}`;
     alert(`Post sent!\n\n${alertMessage}`);
   };
-  
- 
 
   return (
     <div className="createPostPage">
@@ -200,69 +183,27 @@ function CreatePost({ isAuth }) {
               }}
             />
           </div>
-        
-        </div>  
+        </div>
+        <div className="inputGp">
+          <label>Category:</label>
+          <select
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="">Select Category</option>
+            <option value="ChatGPT">ChatGPT</option>
+            <option value="Life">Life</option>
+            <option value="Coding">Coding</option>
+          </select>
+        </div>
         <button onClick={createPost}>Submit Post</button>
-               
-    <button className="add">
-      <Link href="/blog">
-        Go to Blog
-      </Link>
-    </button>
+        <button className="add">
+          <Link href="/blog">Go to Blog</Link>
+        </button>
       </div>
     </div>
   );
 }
 
 export default CreatePost;
-  // const handleCoverImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = (event) => {
-  //       // Access the base64-encoded image data
-  //       const imageData = event.target.result;
-  //       uploadCoverImage(file, imageData)
-  //         .then((downloadURL) => {
-  //           // Handle the download URL, e.g., save it to Firestore or display the image
-  //           console.log(downloadURL);
-  //         })
-  //         .catch((error) => {
-  //           // Handle any errors that occur during the upload process
-  //           console.log(error);
-  //         });
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-  // const uploadCoverImage = async (file, imageData) => {
-  //   try {
-  //     // Create a new reference for the cover image file
-  //     const coverImageFileRef = ref(coverImageRef, file.name);
-  
-  //     // Upload the cover image file to Firebase Storage
-  //     await uploadBytes(coverImageFileRef, file);
-  
-  //     // Get the download URL for the uploaded cover image
-  //     const downloadURL = await getDownloadURL(coverImageFileRef);
-  
-  //     // Return the download URL
-  //     return downloadURL;
-  //   } catch (error) {
-  //     // Handle any errors that occur during the upload process
-  //     console.log(error);
-  //     return null;
-  //   }
-  // };
-    {/* <input type="file" accept="image/*" onChange={handleCoverImageChange} /> */}
-          {/* <div className="inputGp">
-            <label>Image URL:</label>
-            <input
-              placeholder="Image URL..."
-              value={imageUrl}
-              onChange={(event) => {
-                setImageUrl(event.target.value);
-              }}
-            />
-          </div>
-*/}
+

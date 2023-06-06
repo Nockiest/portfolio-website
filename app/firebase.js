@@ -21,7 +21,6 @@ const provider = new GoogleAuthProvider();
 export { db, auth, provider };
 
 export const signInWithGoogle = () => {
-  console.log("trying")
   signInWithPopup(auth, provider)
     .then((result) => {
       console.log(result);
@@ -49,16 +48,7 @@ export const getUserAuthentication = async () => {
   return user;
 };
 // Collection reference
-const colRef = collection(db, "BlogPosts");
-
-const unsubscribe = onSnapshot(colRef, (snapshot) => {
-  let posts = [];
-  snapshot.docs.forEach((doc) => {
-    posts.push({ ...doc.data(), id: doc.id });
-  });
-  console.log(posts);
-});
-
+ 
   
 
 export const checkUserAccess = async () => {
@@ -67,6 +57,7 @@ export const checkUserAccess = async () => {
     if (user) {
       // User is signed in
       const userEmail = user.email; // Get the email of the signed-in user
+    
       // Compare the userEmail with the email used to access the Firebase database
       if (userEmail === 'hanluk@seznam.cz') {
        // The signed-in user has access to the Firebase database
@@ -88,7 +79,26 @@ export const checkUserAccess = async () => {
   }
 };
 
- 
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // User is still signed in
+    console.log('User is signed in:', user);
+  } else {
+    // User has signed out
+    console.log('User has signed out');
+  }
+});
+
+const colRef = collection(db, "BlogPosts");
+
+const unsubscribe = onSnapshot(colRef, (snapshot) => {
+  let posts = [];
+  snapshot.docs.forEach((doc) => {
+    posts.push({ ...doc.data(), id: doc.id });
+  });
+  console.log(posts);
+});
+
 
 // export const signInWithEmail = (signUpEmail, signUpPassword, signUpDisplayName)=>{
 //   createUserWithEmailAndPassword(signUpEmail, signUpPassword, signUpDisplayName)

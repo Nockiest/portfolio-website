@@ -3,17 +3,16 @@ import About from "components/About";
 import Portfolio from "components/Portfolio";
 import Intro from "components/Intro";
 import Services from "components/Services";
-import RootLayout from './RootLayout';
+import Nav from '@/components/Nav';
 
 export default function Home() {
-  return (
-    <RootLayout> 
+  return (  
       <main>
+        <Nav  /> 
         <Intro />
         <Services />
         <About />
         <Portfolio />
-      </main>
-    </RootLayout>
+      </main>  
   )
 }

@@ -4,17 +4,31 @@ import { auth } from "@/app/firebase"; // Make sure to import the necessary depe
 import React, { useState } from "react";
 import { signInWithGoogle } from "@/app/firebase";
 
-export default function LoginButton({ user, signIn }) {
+export default function LoginButton({ user, isAdmin, setIsAdmin}) {
     const [errorMessage, setErrorMessage] = useState("");
     const handleSignInWithGoogle = async () => {
-        console.log("hello")
-  try {
-    await signInWithGoogle();
-    
-  } catch (error) {
-    setErrorMessage('Error signing in with Google.');
-  }
-};
+        
+        try {
+          await signInWithGoogle();
+          
+        } catch (error) {
+          setErrorMessage('Error signing in with Google.');
+        }
+      };
+      const handleSignOut = async () => {
+        try {
+          setIsAdmin(false) 
+          localStorage.clear();  
+          console.log(localStorage.getItem('name'), localStorage.getItem('profilePic'),"xxx")
+          await auth.signOut();
+          
+          
+        } catch (error) {
+          // Handle sign out error
+          console.error('Error signing out:', error);
+        }
+      };
+      
     return (
       <div className="loginPage">
         <p>{!user ? "Sign In With Google to Continue" : "Logged in as: " + user.displayName}</p>
@@ -26,7 +40,7 @@ export default function LoginButton({ user, signIn }) {
             </button>
           </div>
         ) : (
-          <button className="log-out-btn" onClick={() => auth.signOut()}>
+          <button className="log-out-btn" onClick={handleSignOut}>
             Log Out
           </button>
         )}

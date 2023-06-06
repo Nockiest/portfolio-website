@@ -1,7 +1,6 @@
 "use client"
- 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { signInWithPopup,  signInWithGoogle } from 'firebase/auth';
@@ -9,7 +8,8 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 
-
+import BlogHero from '@/components/blog/BlogHero';
+import Nav from '@/components/Nav';
 import Head from 'next/head';
 import SearchBar from '@/components/blog/SearchBar';
 import SearchClasses from '@/components/blog/SearchClasses';
@@ -21,33 +21,64 @@ import '../styles/globals.scss';
 
 import { getUserAuthentication } from '../firebase';
 import { AuthProvider } from '../AuthContext';
-import { auth, db, provider,checkUserAccess  } from '@/app/firebase';
+import { auth, db, provider,checkUserAccess, unsubscribe } from '@/app/firebase';
 import { helmetBattle } from 'fontawesome';
 
 const BlogPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdministrator, setIsAdministrator] = useState(false)
   const [profilePic, setProfilePic] = useState('');
   const [isAuth, setIsAuth] = useState(false);
-  const [postLists, setPostList] = useState([]);
+  const [postLists, setPostList] = useState([...articles]);
   const [user] = useAuthState(auth);
   const [userData, setUserData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
-  // const postsCollectionRef = collection(db, 'BlogPosts');
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [query, setQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+   
+  useEffect(() => {
+    const getPosts = async () => {
+      const data = await getDocs(postsCollectionRef);
+      const updatedPostList = data.docs.map((doc) => {
+        const { XX, YY, ZZZZ } = doc.data();
+        const formattedData = `${XX}:${YY}:${ZZZZ}`;
+        return { ...formattedData, id: doc.id };
+      });
+      setPostList(updatedPostList);
+      console.log(postLists, 'postlists'); // Console.log after updating postList
+    };
+    setPostList( unsubscribe );
+    getPosts();
+   
+  }, []);
 
-  // const deletePost = async (id) => {
-  //   const postDoc = doc(db, 'BlogPost', id);
-  //   await deleteDoc(postDoc);
-  // };
 
+  const handleSearch = (searchText) => {
+    setQuery(searchText);
+  };
+
+  const handleCategorySelection = (category) => {
+    if (selectedCategory === category){
+      setSelectedCategory("")
+    } else {
+       setSelectedCategory(category)
+      }
+  }
+  const handleTagSelection = (tag) => {
+      if (selectedTags.includes(tag)) {
+        setSelectedTags(selectedTags.filter((t) => t !== tag));
+      } else {
+        setSelectedTags([...selectedTags, tag]);
+      }
+  };
   const handleSignInWithGoogle = async () => {
-          console.log("hello")
     try {
       await signInWithGoogle().then(() => {
         checkUserAccess().then((isAdmin) => {
-          if (isAdmin) {
-            setIsAdmin(true);
+          if (user.email="hanluk@seznam.cz") {
+            setIsAdministrator(true);
           }
         });
       });
@@ -73,7 +104,19 @@ const BlogPage = () => {
   };
 
   useEffect(() => {
+    const checkUserAccessAndSetIsAdmin = async () => {
+      try {
+        const hasAccess = await checkUserAccess();
+        setIsAdministrator(hasAccess);
+      } catch (error) {
+        console.log('Error occurred:', error);
+      }
+    };
+  
+    checkUserAccessAndSetIsAdmin();
+  }, [user]);
 
+  useEffect(() => {
     const storedName = localStorage.getItem('name');
     const storedEmail = localStorage.getItem('email');
     const storedProfilePic = localStorage.getItem('profilePic');
@@ -84,70 +127,95 @@ const BlogPage = () => {
       setProfilePic(storedProfilePic || '');
       setIsAuth(true);
       alert(`${storedName || ''} ${storedEmail || ''} ${storedProfilePic || ''}`);
-    }
-    if(checkUserAccess){setIsAdmin(true) }
-    console.log(isAdmin, "xyz")
-     
+    }  
   }, []);
 
-  const handleDelete = (index) => {
-    const updatedArticles = [...articles];
-    updatedArticles.splice(index, 1);
-    setArticles(updatedArticles);
+  
+ 
+  const handleDelete = (id) => {
+    if (!isAdministrator) {
+      return;
+    }
+ 
+    setPostList((prevPostList) =>
+      prevPostList.filter((post) => {
+        return post.id !== id})
+    );
   };
-  // useEffect(() => {
-  //   const getPosts = async () => {
-  //     const data = await getDocs(postsCollectionRef);
-  //     setPostList(
-  //       data.docs.map((doc) => {
-  //         const { XX, YY, ZZZZ } = doc.data();
-  //         const formattedData = `${XX}:${YY}:${ZZZZ}`;
-  //         return { ...formattedData, id: doc.id };
-  //       })
-  //     );
-  //   };
 
-  //   getPosts();
-  //   console.log(postLists, 'xyz');
-  // }, []);
+  const filteredPosts = useMemo(() => {
+    if (
+      selectedTags.length === 0 &&
+      query === '' &&
+      selectedCategory === ''
+    ) {
+      return postLists;
+    }
 
+    return postLists.filter((post) => {
+      const hasSelectedTag =
+        selectedTags.length === 0 ||
+        post.tags.some((tag) => selectedTags.includes(tag));
+      const hasSearchedTerm =
+        query === '' ||
+        post.title.toLowerCase().includes(query.toLowerCase()) ||
+        post.body.toLowerCase().includes(query.toLowerCase());
+      const hasSelectedCategory =
+        selectedCategory === '' || post.category === selectedCategory;
+
+      return hasSelectedTag && hasSearchedTerm && hasSelectedCategory;
+    });
+  }, [selectedTags, query, postLists, selectedCategory]);
+ 
   return (
     <div>
       <Head>
         <title>Blog Page</title>
       </Head>
+      <Nav name={name} profilePic={profilePic} />  
+      <BlogHero />
 
       <main>
+     
         <section className="topSearchBarContainer">
-          <SearchBar />
-          <SearchClasses />
+        <SearchBar
+            className="searchBar"
+            placeholder="search"
+            onSearch={handleSearch}
+            clearOnSearch={false} // Set to true if you want the input to clear on search
+            sendOnEnter={true}
+          />
+         <SearchClasses handleCategorySelection={handleCategorySelection}
+         selectedCategory={selectedCategory} />
           
-         <LoginButton user={user}/>
+         <LoginButton user={user} isAdmin={isAdministrator} setIsAdmin={setIsAdministrator}  />
         </section>
         
         <section className="bodycontainer">
-          <div className="postpreviewcontainer">
-            {articles.map((post, index) => {
-              return (
-                <PostPreview
-                  key={index}
-                  index={index}
-                  heading={post.title}
-                  text={post.body}
-                  image={post.image}
-                  tags={post.tags}
-                  releaseDate={post.Date}
-                  handleDelete={handleDelete}
-                />
-              );
-            })}
-          </div>
-          <TagBar />
-        </section>
+        <div className="postpreviewcontainer">
+          {filteredPosts.map((post, index) => (
+            <PostPreview
+              key={index}
+              id={post.id}
+              heading={post.title}
+              text={post.body}
+              image={post.image}
+              tags={post.tags}
+              releaseDate={post.Date}
+              handleDelete={handleDelete}
+              isAdmin={isAdministrator}
+              category={post.category}
+            />
+          ))}
+        </div>
+        <TagBar selectedTags={selectedTags} handleTagSelection={handleTagSelection} />
+      </section>
 
-        <button className="add">
-          <Link href="/blog/createPost">Add Post</Link>
-        </button>
+        {isAdministrator && (
+          <button className="add">
+            <Link href="/blog/createPost">Add Post</Link>
+          </button>
+        )}
 
         
       </main>
@@ -160,6 +228,10 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
+
+
+
+ 
 
 {/* <div className="homePage">
 {postLists.map((post) => {

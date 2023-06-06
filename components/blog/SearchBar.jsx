@@ -8,45 +8,74 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import React, { useState } from 'react';
 // import SearchIcon from '@mui/icons-material/Search';
-export default function SearchBar({ className, width,  height }) {
-  const [searchText, setSearchText] = useState('Search');
-  library.add(faSearch);
+ 
+
+const SearchBar = ({
+  className,
+  width,
+  height,
+  onSearch,
+  placeholder = 'Search',
+  clearOnSearch = true,
+  sendOnEnter = true,
+}) => {
+  const [searchText, setSearchText] = useState('');
+
   const handleChange = (e) => {
     setSearchText(e.target.value);
-  };
-
-  const handleClick = () => {
-    if (searchText === 'Search') {
-      setSearchText(''); // Clear the input field if it is already empty
+    console.log(sendOnEnter)
+    if ( sendOnEnter) {
+      //onSearch(e.target.value);
+      onSearch(searchText)
     }
   };
 
-  const handleBlur = () => {
-     
-    if (searchText == '') {
-      setSearchText('Search'); // Set the input field value back to "Search" if it is empty on blur
+  const handleClick = () => {
+    setSearchText('');
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (sendOnEnter) {
+        onSearch(searchText);
+        if (clearOnSearch) {
+          setSearchText('');
+        }
+      }
+    }
+  };
+
+  const handleSearch = () => {
+    if (searchText !== '' && !sendOnEnter) {
+      onSearch(searchText);
+      if (clearOnSearch) {
+        setSearchText('');
+      }
     }
   };
 
   const inputStyle = {
-    width: width || '100%', // Use the prop value if defined, otherwise default to '100%'
-    height: height || 'auto', // Use the prop value if defined, otherwise default to 'auto'
+    width: width || '100%',
+    height: height || 'auto',
   };
 
   return (
-    <div className="searchBar">
+    <div className={`searchBar ${className}`}>
       <FontAwesomeIcon icon={faSearch} />
       <input
         type="text"
         value={searchText}
         onChange={handleChange}
         onClick={handleClick}
-        onBlur={handleBlur}
+        onBlur={handleChange}
+        onKeyDown={handleKeyDown}
         className="borderless"
         style={inputStyle}
+        placeholder={placeholder}
       />
+      <button onClick={handleSearch}>Search</button>
     </div>
   );
+};
 
-}
-   
+export default SearchBar;

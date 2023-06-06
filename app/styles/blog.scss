@@ -29,7 +29,7 @@ body{
 
 
 .searchBar {
-  display: flex;
+display: flex;
 flex-direction: row;
 align-items: center;
 padding: 8px 16px;
@@ -44,6 +44,14 @@ border: 1px solid #000000;
 border-radius: 16px;
 
 flex-grow: 2;
+input {
+  border: none;
+}
+}
+
+.tagBar-searchBar{
+
+   
 }
 
 .borderless{
@@ -68,6 +76,10 @@ $search-container-horizontal-padding:24px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     flex-grow: 0;
+
+    .selectedButton{
+      background-color: #FFFFFF;
+    }
     }
 
     .searchbt{
@@ -81,14 +93,11 @@ $search-container-horizontal-padding:24px;
       width: $searchBt-width;
       height: 32px;
 
-    /* portfolio/current */
-    
-    background: $clr-accent;
-    border-radius: 8px;
+      background: $clr-accent;
+      border-radius: 8px;
 
-    /* Inside auto layout */
-    flex: none;
-    flex-grow: 0;
+      flex: none;
+      flex-grow: 0;
 }
 .searchbt:hover {
   filter: brightness(1.2); /* Lighten the button on hover */
@@ -166,6 +175,11 @@ $search-container-horizontal-padding:24px;
       padding: 0px 16px;
       border: 1px solid;
       line-height: 0.8em;
+
+      > div {
+        @include alignedInRow;
+        gap: 16px;
+      }
     }
 
     .buttonRow{
@@ -186,8 +200,7 @@ $search-container-horizontal-padding:24px;
         align-items: center;
         padding: 8px 12px;
         gap: 8px;
-        
-        
+               
         /* portfolio/black */
         
         border: 1px solid #303030;
@@ -198,6 +211,8 @@ $search-container-horizontal-padding:24px;
         flex: none;
         order: 0;
         flex-grow: 0;
+
+        
       }
     }
   }
@@ -218,10 +233,15 @@ width: 352px;
 height: 440px;
 background: #FFFFFF;
 border: 1px solid #000000;
+border-radius: 8px;
+padding: 8px;
 
 .tagBar-upper{
   display:flex ;
   flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 0.2em;
    
 }
 .tag-list {
@@ -255,10 +275,7 @@ border: 1px solid #000000;
  
 
 .nav-toggle-absolute {
- 
-  position: relative;
-  
-   
+  position: relative;  
    right:100px;
 }
 
