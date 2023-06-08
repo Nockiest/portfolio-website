@@ -20,11 +20,11 @@ export default function RootLayout({ children }) {
         
         <body  className={inter.className}>
           
-          <Nav absolutePos={true}/>
-          <BlogHero />
+          {/* <Nav absolutePos={true}/>
+          <BlogHero /> */}
          {children}
          {/* <Footer /> */}
-         <NextArticlesRow />
+  {/* <NextArticlesRow /> */}
           </body>
           
       </html>

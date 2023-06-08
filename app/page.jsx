@@ -7,13 +7,14 @@ import RootLayout from './RootLayout';
 
 export default function Home() {
   return (
-    <RootLayout> 
+     
       <main>
+       <Nav  />
         <Intro />
         <Services />
         <About />
         <Portfolio />
       </main>
-    </RootLayout>
+ 
   )
 }
