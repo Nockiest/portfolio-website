@@ -2,30 +2,34 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import NavList from './NavList';
-
 const Nav = ({ absolutePos }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [profilePic, setProfilePic] = useState('');
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
     console.log(isNavOpen);
   };
 
-  // Retrieve name and profilePic from localStorage
-  const name = localStorage.getItem('name');
-  const profilePic = localStorage.getItem('profilePic');
+  useEffect(() => {
+    const storedName = localStorage.getItem('name');
+    const storedProfilePic = localStorage.getItem('profilePic');
+    setName(storedName || '');
+    setProfilePic(storedProfilePic || '');
+  }, [name, profilePic]);
 
   return (
-    <header className={absolutePos ? 'absolute-header' : ''}>
-      <div className={`logo ${absolutePos ? 'logo-absolute' : ''}`}>
+    <header>
+      <div className={`logo`}>
         <img src="https://i.postimg.cc/63Cn0Tr3/greenletter-A.jpg" alt="dev And" />
       </div>
-      <button className={`nav-toggle ${absolutePos ? 'nav-toggle-absolute' : ''}`} aria-label="toggle navigation" onClick={toggleNav}>
-        <span className="hamburger"></span>
+      <button className={`nav-toggle`} aria-label="toggle navigation" onClick={toggleNav}>
+        <span className={`hamburger`}></span>
       </button>
-      <nav className={`nav ${isNavOpen ? 'nav-open' : ''}`}>
+      <nav className={`nav`}>
         <NavList />
       </nav>
 
@@ -38,5 +42,4 @@ const Nav = ({ absolutePos }) => {
     </header>
   );
 };
-
 export default Nav;

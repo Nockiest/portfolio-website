@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import "./styles/globals.scss"  
 import { useNavigation } from 'next/navigation';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+ 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -13,14 +14,14 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+ 
+
   return (
     <html lang="en">
-      
-      <body className={inter.className}>
-        <Nav  />
+      <body>
         {children}
         <Footer />
-        </body>
+      </body>
     </html>
-  )
+  );
 }

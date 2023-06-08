@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import "../styles/globals.scss"    
 import Footer from "../../components/Footer";
@@ -5,6 +7,7 @@ import { Inter } from 'next/font/google';
 import BlogHero from '@/components/blog/BlogHero';
 import NextArticlesRow from '@/components/blog/NextArticlesRow';
 import Nav from '@/components/Nav';
+import { useEffect, useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,20 +17,37 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
-  
-    return (
-      <html lang="en">
+  const [name, setName] = useState('');
+  const [profilePic, setProfilePic] = useState('');
+
+  useEffect(() => {
+    // Retrieve data from local storage
+    const storedName = localStorage.getItem('name');
+    const storedProfilePic = localStorage.getItem('profilePic');
+
+    // Update state if data exists in local storage
+    if (storedName) {
+      setName(storedName);
+    }
+    if (storedProfilePic) {
+      setProfilePic(storedProfilePic);
+    }
+  }, []);
+
+  return (
+    <html lang="en">
+      <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
+      
+      </head>
+      <body className={inter.className}>
+        {/* <Nav name={name} profilePic={profilePic} /> */}
         
-        <body  className={inter.className}>
-          
-          {/* <Nav absolutePos={true}/>
-          <BlogHero /> */}
-         {children}
-         {/* <Footer /> */}
-  {/* <NextArticlesRow /> */}
-          </body>
-          
-      </html>
-    )
-  }
-  
+        {children}
+        <NextArticlesRow />
+    
+      
+      </body>
+    </html>
+  );
+}

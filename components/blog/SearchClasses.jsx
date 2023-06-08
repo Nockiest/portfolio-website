@@ -1,27 +1,31 @@
 import React from 'react'
 // import styles from './searchClasses.module.scss';
 
-const SearchClasses = ({ className }) => {
+const SearchClasses = ({ handleCategorySelection, selectedCategory }) => {
   return (
     <div className="searchclassescontainer">
-      <button className="searchbt">ChatGPT</button>
-      <button className="searchbt">Coding</button>
-      <button className="searchbt">News</button>
+      <button
+        className={`btn searchbt ${selectedCategory === 'ChatGPT' ? 'selectedButton' : ''}`}
+        onClick={() => handleCategorySelection('ChatGPT')}
+      >
+        ChatGPT
+      </button>
+      <button
+        className={`btn searchbt ${selectedCategory === 'Coding' ? 'selectedButton' : ''}`}
+        onClick={() => handleCategorySelection('Coding')}
+      >
+        Coding
+      </button>
+      <button
+        className={`btn searchbt ${selectedCategory === 'News' ? 'selectedButton' : ''}`}
+        onClick={() => handleCategorySelection('News')}
+      >
+        News
+      </button>
     </div>
   );
 };
  
-// function SearchClasses({ className }) {
-//     const searchClassesContainer = className.searchClassesContainer;
-//     const button = className.button;
-//     console.log(styles)
-//     return (
-//       <div className={searchClassesContainer}>
-//         <button className={button}>ChatGPT</button>
-//         <button className={button}>Coding</button>
-//         <button className={button}>News</button>
-//       </div>
-//     );
-//   }
+ 
 
 export default SearchClasses 

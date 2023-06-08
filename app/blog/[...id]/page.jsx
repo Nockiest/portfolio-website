@@ -1,17 +1,21 @@
 "use client"
 import "../../styles/post.scss"  
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import TextBody from "@/components/blog/post/Textbody";
 import InformationBar from "@/components/blog/post/InformationBar";
 import Comment from "@/components/blog/post/comment";
 import NextArticlesRow from "@/components/blog/NextArticlesRow";
 import RootLayout from "./layout"
 import BlogHero from "@/components/blog/BlogHero";
+import { withRouter } from 'next/router';
+// jest.mock('next/router');
 
-const DynamicPage = () => {
-  const router = useRouter();
-  // const { dynamicContent } = router.query; // This will get the dynamic content from the URL
-  console.log(router,router.query,router.pathname) 
+const DynamicPage = ({ router }) => {
+  // console.log(router )
+  // // const router = useRouter();
+  // // const { postId } = router.query;
+  // // const { dynamicContent } = router.query; // This will get the dynamic content from the URL
+  // console.log(router,router?.query,router?.pathname) 
   return (
      
       
@@ -29,4 +33,8 @@ const DynamicPage = () => {
   );
 };
 
-export default DynamicPage;
+export default  DynamicPage ;
+ 
+  // Fetch the blog post data based on the postId
+
+  

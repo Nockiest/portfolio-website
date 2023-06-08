@@ -1,10 +1,16 @@
-import React from 'react'
+import React, {useEffect, useState } from 'react'
 import Image from "next/image"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+<<<<<<< HEAD
  
     
  
+=======
+import Link from 'next/link';
+import { storage } from '@/app/firebase';
+import { getDownloadURL, ref } from 'firebase/storage';
+>>>>>>> d14bd9e
 function PostPreview({ category, handleDelete, heading, text, image, tags, releaseDate, id, isAdmin }) {
   const postTitle = heading.replace(/\s+/g, '-').toLowerCase(); // Generate the post title for the URL
   const [imageUrl, setImageUrl] = useState(""); 
@@ -28,7 +34,11 @@ function PostPreview({ category, handleDelete, heading, text, image, tags, relea
 
   return (
     <div className="postPreview">
+<<<<<<< HEAD
             <Image className="post-image" src={imageUrl} alt="Image" width={240} height={240} />
+=======
+        <Image className="post-image" src={imageUrl} alt="Image" width={240} height={240} /> 
+>>>>>>> d14bd9e
        
       <div className="right-side-container">
         <div className="title-container">
@@ -63,4 +73,10 @@ function PostPreview({ category, handleDelete, heading, text, image, tags, relea
       <p className="time-label">{releaseDate}</p>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+
+export default PostPreview
+>>>>>>> d14bd9e

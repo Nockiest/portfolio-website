@@ -1,16 +1,21 @@
 "use client"
- 
 
+<<<<<<< HEAD
+=======
+import Head from 'next/head';
+>>>>>>> d14bd9e
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { signInWithPopup,  signInWithGoogle } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs,onSnapshot } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
-
-
-import Head from 'next/head';
+import {storage } from "../firebase";
+import { deleteObject, getDownloadURL, ref } from 'firebase/storage';
+import BlogHero from '@/components/blog/BlogHero';
+import Nav from '@/components/Nav';
+ 
 import SearchBar from '@/components/blog/SearchBar';
 import SearchClasses from '@/components/blog/SearchClasses';
 import PostPreview from '@/components/blog/PostPreview';
@@ -23,9 +28,9 @@ import '../styles/globals.scss';
 import { deleteObject, ref } from 'firebase/storage';
 import { getUserAuthentication } from '../firebase';
 import { AuthProvider } from '../AuthContext';
-import { auth, db, provider,checkUserAccess  } from '@/app/firebase';
+import posts, { auth, db, provider,checkUserAccess, unsubscribe } from '@/app/firebase';
 import { helmetBattle } from 'fontawesome';
-
+ 
 const BlogPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -40,21 +45,7 @@ const BlogPage = () => {
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  // useEffect(() => {
-  //   const fetchImageUrl = async () => {
-  //     try {
-  //     // const imageRef = ref(storage, `images/d5858e7b-e50a-4ad4-ad90-2b5ba6241f42`);
-  //     const imageRef = ref(storage, `test.png`);  
-  //     const url = await getDownloadURL(imageRef);
-  //       console.log(url, "url")
-  //       setImageUrl(url);
-  //     } catch (error) {
-  //       console.error('Error fetching image URL:', error);
-  //     }
-  //   };
-
-  //   fetchImageUrl();
-  // }, []);
+ 
     useEffect(() => {
       const colRef = collection(db, 'BlogPosts');
       const unsubscribe = onSnapshot(colRef, (snapshot) => {
@@ -143,29 +134,39 @@ const BlogPage = () => {
     }  
   }, []);
 
-  
- 
-  const handleDelete = async (id) => {
-    if (!isAdministrator) {
-      return;
-    }
- 
-    setPostList((prevPostList) =>
-      prevPostList.filter((post) => {
-        return post.id !== id})
-    );
 
+  const handleDelete = async (id) => {
+    // Find the post in the post list
+    const postToDelete = postLists.find((post) => post.id === id);
+     console.log(postToDelete,postToDelete.postId, "XYZ")
+    // If the post has an associated image, delete it from Firebase Storage
+    if (postToDelete.postId) {
+      try {
+        const imageRef = ref(storage, `images/${postToDelete.postId}`);
+        console.log(imageRef, "img")
+        await deleteObject(imageRef);
+         
+        console.log(`Image ${postToDelete.postId} deleted successfully.`);
+      } catch (error) {
+        console.error('Error deleting image:', error);
+      }
+    }
+  
+    // Remove the post from the post list
+    setPostList((prevPostList) =>
+      prevPostList.filter((post) => post.id !== id)
+    );
+  
     try {
+      // Delete the post from Firestore
       const postRef = doc(db, 'BlogPosts', id);
       await deleteDoc(postRef);
-      setPostList((prevPostList) =>
-        prevPostList.filter((post) => post.id !== id)
-      );
+      console.log('Post deleted successfully.');
     } catch (error) {
       console.error('Error deleting post:', error);
     }
-  
   };
+
 
   const filteredPosts = useMemo(() => {
     if (
@@ -255,48 +256,4 @@ const BlogPage = () => {
 
 export default BlogPage;
 
-{/* <div className="homePage">
-{postLists.map((post) => {
-  const title = post.Title || '';
-  const postText = post.postText || '';
-  const author = post.Author || '';
-  const tags = post.tags || [];
 
-  return (
-    <div className="post">
-      <div className="postHeader">
-        <div className="title">
-          <h1>{title}</h1>
-        </div>
-        <div className="deletePost">{/* Code for deleting a post  </div>
-      </div>
-      <div className="postTextContainer">{postText}</div>
-      <h3>@{author}</h3>
-      <div className="tagsContainer">
-        {tags.map((tag) => (
-          <div key={tag} className="tag">
-            {tag}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-})}
-</div> */}
-
-// export default function Root() {
-//   return (
-//     <AuthProvider>
-//       <BlogPage />
-//     </AuthProvider>
-//   );
-// }
-    /* {!isAuth ? (
-            <button>
-              <Link href="/logPage">Login</Link>
-            </button>
-          ) : (
-            <button>
-              <Link href="/logPage">Logout</Link>
-            </button>
-          // )} */
