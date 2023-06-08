@@ -2,92 +2,16 @@
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import React, { useState, useEffect } from "react";
 import { addDoc, collection } from "firebase/firestore";
-import { db, auth } from "../../firebase";
+import {storage,  db, auth } from "../../firebase";
 import { useRouter } from "next/router";
 import Link from 'next/link';
-// function CreatePost({ isAuth }) {
-//   const [title, setTitle] = useState("");
-//   const [postText, setPostText] = useState("");
-//   const [tags, setTags] = useState([]);
+import { v4 as uuidv4 } from 'uuid';
 
-//   const postsCollectionRef = collection(db, "BlogPosts");
-//   // const router = useRouter();
-
-//   const createPost = async () => {
-//     const currentDate = new Date();
-//     const formattedDate = currentDate.toISOString().slice(2, 10).replace(/-/g, '');
-
-//     await addDoc(postsCollectionRef, {
-//       title,
-//       postText,
-//       tags,
-//       releaseDate: formattedDate,
-//       author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
-//     });
-
-//     // Clear input fields
-//     setTitle("");
-//     setPostText("");
-//     setTags([]);
-
-//     // Show alert with post contents
-//     const alertMessage = `Post Title: ${title}\nPost Text: ${postText}\nTags: ${tags.join(", ")}`;
-//     alert(`Post sent!\n\n${alertMessage}`);
-
-//     // router.push("/");
-//   };
-
-//   useEffect(() => {
-//     if (!isAuth) {
-//       // router.push("/login");
-//     }
-//   }, []);
-
-//   return (
-//     <div className="createPostPage">
-//       <div className="cpContainer">
-//         <h1>Create A Post</h1>
-//         <div className="inputGp">
-//           <label> Title:</label>
-//           <input
-//             placeholder="Title..."
-//             value={title}
-//             onChange={(event) => {
-//               setTitle(event.target.value);
-//             }}
-//           />
-//         </div>
-//         <div className="inputGp">
-//           <label> Post:</label>
-//           <textarea
-//             placeholder="Post..."
-//             value={postText}
-//             onChange={(event) => {
-//               setPostText(event.target.value);
-//             }}
-//           />
-//         </div>
-//         <div className="inputGp">
-//           <label>Tags:</label>
-//           <input
-//             placeholder="Add tags..."
-//             value={tags.join(", ")}
-//             onChange={(event) => {
-//               const enteredTags = event.target.value.split(",").map((tag) => tag.trim());
-//               setTags(enteredTags);
-//             }}
-//           />
-//         </div>
-//         <button onClick={createPost}>Submit Post</button>
-//       </div>
-//     </div>
-//   );
-// }
 function CreatePost({ isAuth }) {
   const [title, setTitle] = useState("");
   const [postText, setPostText] = useState("");
   const [tags, setTags] = useState([]);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUpload, setImageUpload] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -113,27 +37,49 @@ function CreatePost({ isAuth }) {
     setSelectedCategory(event.target.value);
   };
 
+  
   const createPost = async () => {
+    const postId = uuidv4();
     // Create the blog post document
-    await addDoc(postsCollectionRef, {
+    const docRef = await addDoc(postsCollectionRef, {
       title,
       postText,
-      tags: tags,
+      tags: selectedTags,
       category: selectedCategory,
+      postId,
       author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
     });
-
+    uploadFile(postId)
     // Clear input fields
     setTitle("");
     setPostText("");
     setSelectedTags([]);
     setSelectedCategory("");
-
+  
     // Show alert with post contents
-    const alertMessage = `Post Title: ${title}\nPost Text: ${postText}\nTags: ${selectedTags.join(", ")}\nCategory: ${selectedCategory}`;
+    const alertMessage = `Post Title: ${title}\nPost Text: ${postText}\nTags: ${selectedTags.join(", ")}\nCategory: ${selectedCategory}\nImage ID: ${postId} `;
     alert(`Post sent!\n\n${alertMessage}`);
+  
+    // Console log the image ID and the post ID
+    alert(`Image ID: ${postId} Post ID: ${docRef.id}`);
+  
   };
 
+  const uploadFile = (postId) => {
+    if (!imageUpload) return;
+  
+    // Generate a unique ID for the image
+     // You can use any method to generate a unique ID
+  
+    const imageRef = ref(storage, `images/${postId}`);
+  
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        console.log(url);
+      });
+    });
+  };
+  
   return (
     <div className="createPostPage">
       <div className="cpContainer">
@@ -195,6 +141,16 @@ function CreatePost({ isAuth }) {
             <option value="Life">Life</option>
             <option value="Coding">Coding</option>
           </select>
+        </div>
+        <div className="inputGp">
+          <label>Image URL:</label>
+          <input
+        type="file"
+        onChange={(event) => {
+          setImageUpload(event.target.files[0]);
+        }} /> 
+
+          
         </div>
         <button onClick={createPost}>Submit Post</button>
         <button className="add">

@@ -5,19 +5,19 @@ const SearchClasses = ({ handleCategorySelection, selectedCategory }) => {
   return (
     <div className="searchclassescontainer">
       <button
-        className={`searchbt ${selectedCategory === 'ChatGPT' ? 'selectedButton' : ''}`}
+        className={`btn searchbt ${selectedCategory === 'ChatGPT' ? 'selectedButton' : ''}`}
         onClick={() => handleCategorySelection('ChatGPT')}
       >
         ChatGPT
       </button>
       <button
-        className={`searchbt ${selectedCategory === 'Coding' ? 'selectedButton' : ''}`}
+        className={`btn searchbt ${selectedCategory === 'Coding' ? 'selectedButton' : ''}`}
         onClick={() => handleCategorySelection('Coding')}
       >
         Coding
       </button>
       <button
-        className={`searchbt ${selectedCategory === 'News' ? 'selectedButton' : ''}`}
+        className={`btn searchbt ${selectedCategory === 'News' ? 'selectedButton' : ''}`}
         onClick={() => handleCategorySelection('News')}
       >
         News

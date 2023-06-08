@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, onSnapshot , query} from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 const firebaseConfig = {
   apiKey: "AIzaSyC-3nh_2zFbSDSAZuG3SAoSz7tMxg3VFZs",
   authDomain: "blogwebsite-a70d3.firebaseapp.com",
@@ -17,9 +17,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
- 
+// const storage = getStorage();
+// const storageRef = ref(storage, 'images');
+const file = "https://www.google.com/search?q=kitten&sxsrf=APwXEdf22kqYg_npswvQ7bBRVc13rapnBQ:1686069215499&tbm=isch&source=iu&ictx=1&vet=1&fir=istYcz98GWn1rM%252Cxx9Is_ftEERpBM%252C%252Fm%252F0hjzp%253B5UKE_ztEeyAg2M%252CdTDdan6TWTOO-M%252C_%253ByCoPFqqDu6fXGM%252Cvo1Ocq-YkePPhM%252C_%253BzA07E1ZMjNAsgM%252CZ54b0Pd9T-jF2M%252C_%253BB-Gl_6-jdKx4EM%252C-uzr7GKcWawrMM%252C_%253BWj-HITS9Udu5eM%252C0ObwAsOsafiLsM%252C_&usg=AI4_-kTmfYAJ7uB8ga_owv_9uZ2xgwzGTg&sa=X&ved=2ahUKEwjq7p-lia__AhWUSvEDHZxbDlkQ_B16BAhEEAE#imgrc=5UKE_ztEeyAg2M // Get the image file";
+// const imageRef = ref(storageRef, file.name); 
+// const uploadTask = uploadBytes(imageRef, file);
+  
 export { db, auth, provider };
-
+export const storage = getStorage(app);
 export const signInWithGoogle = () => {
   signInWithPopup(auth, provider)
     .then((result) => {
@@ -48,8 +53,6 @@ export const getUserAuthentication = async () => {
   return user;
 };
 // Collection reference
- 
-  
 
 export const checkUserAccess = async () => {
   try {
@@ -89,146 +92,18 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
-const colRef = collection(db, "BlogPosts");
+const colRef = collection(db, 'BlogPosts');
+ 
+let posts = [];
 
-const unsubscribe = onSnapshot(colRef, (snapshot) => {
-  let posts = [];
+ const unsubscribe = onSnapshot(colRef, (snapshot) => {
+  // posts = [];
   snapshot.docs.forEach((doc) => {
     posts.push({ ...doc.data(), id: doc.id });
   });
-  console.log(posts);
+  console.log(posts, 'Second console.log');
 });
-
-
-// export const signInWithEmail = (signUpEmail, signUpPassword, signUpDisplayName)=>{
-//   createUserWithEmailAndPassword(signUpEmail, signUpPassword, signUpDisplayName)
-//   .then(cred => {
-//     console.log('user created:', cred.user)
-//     signupForm.reset()
-//   })
-//   .catch(err => {
-//     console.log(err.message)
-//   })
-// }
-
-// 1. argument == query listener
+console.log(posts, "posts");
+export default posts;
  
 
-  // const addPost= document.querySelector('.add')
-  // if (addPost) {
-  //   addPost.addEventListener('submit', (e) => {
-  //     e.preventDefault()
-    
-  //     addDoc(colRef, {
-  //       title: addBookForm.title.value,
-  //       author: addBookForm.author.value,
-  //       createdAt: serverTimestamp(),
-  //     })
-  //     .then(() => {
-  //       addBookForm.reset()
-  //     })
-  //   })
-  // }
- 
-
-// deleting docs
-// const deletePost = document.querySelector('.delete')
-// if (deletePost) {
-//     deletePost.addEventListener('submit', (e) => {
-//       e.preventDefault()
-
-//       const docRef = doc(db, 'Hello-World', deletePost.id.value)
-
-//       deleteDoc(docRef)
-//         .then(() => {
-//           deletePost.reset()
-//         })
-//     })
-// }
-
-// const docRef = doc(db, 'Hello-world', '7UlfhHPkA7MpoyLj1KHO');
-
-// getDoc(docRef)
-// .then(doc => {
-// console.log(doc.data(), doc.id)
-// })
-
-
-// const unsubDoc =  onSnapshot(docRef, (doc) => {
-//   console.log(doc.data(), doc.id)
-// })//updates ONLY on the change of the single document
-
-// const updateForm = document.querySelector('.update')
-// updateForm.addEventListener('submit', (e) => {
-//   e.preventDefault()
-
-//   let docRef = doc(db, 'Hello-World', updateForm.id.value)
-
-//   updateDoc(docRef, {
-//     title: 'updated title'
-//   })
-//   .then(() => {
-//     updateForm.reset()
-//   })
-// })
-
-// const signupForm = document.querySelector('.signup')
-// signupForm.addEventListener('submit', (e) => {
-//   e.preventDefault()
-
-//   const email = signupForm.email.value
-//   const password = signupForm.password.value
-
-//   createUserWithEmailAndPassword(auth, email, password)
-//     .then(cred => {
-//       console.log('user created:', cred.user)
-//       signupForm.reset()
-//     })
-//     .catch(err => {
-//       console.log(err.message)
-//     })
-// })
-// // logging in and out
-// const logoutButton = document.querySelector('.logout')
-// logoutButton.addEventListener('click', () => {
-// signOut(auth)
-// .then(() => {
-//   console.log('user signed out')
-// })
-// .catch(err => {
-//   console.log(err.message)
-// })
-// })
-
-// const loginForm = document.querySelector('.login')
-// loginForm.addEventListener('submit', (e) => {
-// e.preventDefault()
-
-// const email = loginForm.email.value
-// const password = loginForm.password.value
-
-// signInWithEmailAndPassword(auth, email, password)
-// .then(cred => {
-//   console.log('user logged in:', cred.user)
-//   loginForm.reset()
-// })
-// .catch(err => {
-//   console.log(err.message)
-// })
-// })
-
-// // subscribing to auth changes
-// const unsubAuth = onAuthStateChanged(auth, (user) => {
-// console.log('user status changed:', user)
-// })
-
- 
-
-// // unsubscribing from changes (auth & db)
-// const unsubButton = document.querySelector('.unsub')
-// unsubButton.addEventListener('click', () => {
-//   console.log('unsubscribing')
-//   unsubCol()
-//   unsubDoc()
-//   unsubAuth()
-// })

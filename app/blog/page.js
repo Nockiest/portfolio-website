@@ -1,16 +1,18 @@
 "use client"
 
+import Head from 'next/head';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { signInWithPopup,  signInWithGoogle } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs,onSnapshot } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
-
+import {storage } from "../firebase";
+import { deleteObject, getDownloadURL, ref } from 'firebase/storage';
 import BlogHero from '@/components/blog/BlogHero';
 import Nav from '@/components/Nav';
-import Head from 'next/head';
+ 
 import SearchBar from '@/components/blog/SearchBar';
 import SearchClasses from '@/components/blog/SearchClasses';
 import PostPreview from '@/components/blog/PostPreview';
@@ -18,42 +20,41 @@ import TagBar from '@/components/blog/TagBar';
 import LoginButton from '@/components/blog/LoginButton';
  import articles from '../articles';
 import '../styles/globals.scss';
+// import Image from "next/image";
 
 import { getUserAuthentication } from '../firebase';
 import { AuthProvider } from '../AuthContext';
-import { auth, db, provider,checkUserAccess, unsubscribe } from '@/app/firebase';
+import posts, { auth, db, provider,checkUserAccess, unsubscribe } from '@/app/firebase';
 import { helmetBattle } from 'fontawesome';
-
+ 
 const BlogPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isAdministrator, setIsAdministrator] = useState(false)
   const [profilePic, setProfilePic] = useState('');
   const [isAuth, setIsAuth] = useState(false);
-  const [postLists, setPostList] = useState([...articles]);
+  const [postLists, setPostList] = useState([] );//[...articles]
   const [user] = useAuthState(auth);
   const [userData, setUserData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-   
-  useEffect(() => {
-    const getPosts = async () => {
-      const data = await getDocs(postsCollectionRef);
-      const updatedPostList = data.docs.map((doc) => {
-        const { XX, YY, ZZZZ } = doc.data();
-        const formattedData = `${XX}:${YY}:${ZZZZ}`;
-        return { ...formattedData, id: doc.id };
+  const [imageUrl, setImageUrl] = useState('');
+ 
+    useEffect(() => {
+      const colRef = collection(db, 'BlogPosts');
+      const unsubscribe = onSnapshot(colRef, (snapshot) => {
+        const postsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+        setPostList(postsData);
+        console.log(postsData, 'Second console.log');
       });
-      setPostList(updatedPostList);
-      console.log(postLists, 'postlists'); // Console.log after updating postList
-    };
-    setPostList( unsubscribe );
-    getPosts();
-   
-  }, []);
-
+  
+      return () => {
+        unsubscribe(); // Unsubscribe from the snapshot listener
+      };
+    }, []);
+ 
 
   const handleSearch = (searchText) => {
     setQuery(searchText);
@@ -126,22 +127,43 @@ const BlogPage = () => {
       setEmail(storedEmail || '');
       setProfilePic(storedProfilePic || '');
       setIsAuth(true);
-      alert(`${storedName || ''} ${storedEmail || ''} ${storedProfilePic || ''}`);
     }  
   }, []);
 
   
- 
-  const handleDelete = (id) => {
-    if (!isAdministrator) {
-      return;
+
+  const handleDelete = async (id) => {
+    // Find the post in the post list
+    const postToDelete = postLists.find((post) => post.id === id);
+     console.log(postToDelete,postToDelete.postId, "XYZ")
+    // If the post has an associated image, delete it from Firebase Storage
+    if (postToDelete.postId) {
+      try {
+        const imageRef = ref(storage, `images/${postToDelete.postId}`);
+        console.log(imageRef, "img")
+        await deleteObject(imageRef);
+         
+        console.log(`Image ${postToDelete.postId} deleted successfully.`);
+      } catch (error) {
+        console.error('Error deleting image:', error);
+      }
     }
- 
+  
+    // Remove the post from the post list
     setPostList((prevPostList) =>
-      prevPostList.filter((post) => {
-        return post.id !== id})
+      prevPostList.filter((post) => post.id !== id)
     );
+  
+    try {
+      // Delete the post from Firestore
+      const postRef = doc(db, 'BlogPosts', id);
+      await deleteDoc(postRef);
+      console.log('Post deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
   };
+
 
   const filteredPosts = useMemo(() => {
     if (
@@ -171,12 +193,13 @@ const BlogPage = () => {
     <div>
       <Head>
         <title>Blog Page</title>
+ 
       </Head>
       <Nav name={name} profilePic={profilePic} />  
       <BlogHero />
-
+      
       <main>
-     
+        
         <section className="topSearchBarContainer">
         <SearchBar
             className="searchBar"
@@ -193,13 +216,14 @@ const BlogPage = () => {
         
         <section className="bodycontainer">
         <div className="postpreviewcontainer">
+        {/* <Image src={imageUrl} alt="Image" width={240} height={240} /> */}
           {filteredPosts.map((post, index) => (
             <PostPreview
               key={index}
               id={post.id}
               heading={post.title}
-              text={post.body}
-              image={post.image}
+              text={post.postText}
+              image={post.postId}
               tags={post.tags}
               releaseDate={post.Date}
               handleDelete={handleDelete}

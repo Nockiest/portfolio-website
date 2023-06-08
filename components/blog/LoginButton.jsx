@@ -3,7 +3,7 @@
 import { auth } from "@/app/firebase"; // Make sure to import the necessary dependencies
 import React, { useState } from "react";
 import { signInWithGoogle } from "@/app/firebase";
-
+import GoogleButton from "../partial/GoogleButton";
 export default function LoginButton({ user, isAdmin, setIsAdmin}) {
     const [errorMessage, setErrorMessage] = useState("");
     const handleSignInWithGoogle = async () => {
@@ -28,22 +28,41 @@ export default function LoginButton({ user, isAdmin, setIsAdmin}) {
           console.error('Error signing out:', error);
         }
       };
-      
+      const logoutButtonStyles = {
+        backgroundColor: '#fff',
+        color: '#000',
+        borderRadius: '5px',
+        padding: '10px 20px',
+        border: 'none',
+        cursor: 'pointer',
+      };
     return (
-      <div className="loginPage">
-        <p>{!user ? "Sign In With Google to Continue" : "Logged in as: " + user.displayName}</p>
+      <div className="loginSecttion">
+    
         {!user ? (
           <div>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-            <button className="login-with-google-btn" onClick={handleSignInWithGoogle}>
+            {/* <button className="googleButton btn"  >
+              <span className="icon">G</span>
               Sign in with Google
-            </button>
+            </button> */}
+            <GoogleButton onClick={handleSignInWithGoogle}/>
           </div>
         ) : (
-          <button className="log-out-btn" onClick={handleSignOut}>
+          <button className="log-out-btn btn" onClick={handleSignOut}
+          style={logoutButtonStyles} >
             Log Out
           </button>
         )}
+         <p>
+          {!user ? (
+            <p></p>
+            // <strong>Sign In With Google to Continue</strong>
+          ) : (
+            <strong>Logged in as: {user.displayName}</strong>
+          )}
+        </p>
+         
       </div>
     );
   }

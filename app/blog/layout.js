@@ -38,6 +38,10 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
+      <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
+      
+      </head>
       <body className={inter.className}>
         {/* <Nav name={name} profilePic={profilePic} /> */}
         
