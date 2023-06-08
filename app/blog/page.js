@@ -1,9 +1,6 @@
 "use client"
 
-<<<<<<< HEAD
-=======
 import Head from 'next/head';
->>>>>>> d14bd9e
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -13,8 +10,8 @@ import { collection, deleteDoc, doc, getDocs,onSnapshot } from 'firebase/firesto
 import { v4 as uuidv4 } from 'uuid';
 import {storage } from "../firebase";
 import { deleteObject, getDownloadURL, ref } from 'firebase/storage';
-import BlogHero from '@/components/blog/BlogHero';
-import Nav from '@/components/Nav';
+ 
+ 
  
 import SearchBar from '@/components/blog/SearchBar';
 import SearchClasses from '@/components/blog/SearchClasses';
@@ -25,7 +22,7 @@ import Nav from '@/components/Nav';
 import BlogHero from '@/components/blog/BlogHero';
 
 import '../styles/globals.scss';
-import { deleteObject, ref } from 'firebase/storage';
+ 
 import { getUserAuthentication } from '../firebase';
 import { AuthProvider } from '../AuthContext';
 import posts, { auth, db, provider,checkUserAccess, unsubscribe } from '@/app/firebase';
