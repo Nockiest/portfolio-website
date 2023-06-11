@@ -1,22 +1,21 @@
-import React, {useEffect, useState } from 'react'
-import Image from "next/image"
+import React, { useEffect, useState } from 'react';
+import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
- 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { storage } from '@/app/firebase';
 import { getDownloadURL, ref } from 'firebase/storage';
+
 function PostPreview({ category, handleDelete, heading, text, image, tags, releaseDate, id, isAdmin }) {
   const postTitle = heading.replace(/\s+/g, '-').toLowerCase(); // Generate the post title for the URL
   const [imageUrl, setImageUrl] = useState(""); 
+  const router = useRouter();
 
   useEffect(() => {
     const fetchImageUrl = async () => {
       try {
         const imageRef = ref(storage, `images/${image}`);
-        console.log(imageRef)
         const url = await getDownloadURL(imageRef);
-        console.log(url)
         setImageUrl(url);
       } catch (error) {
         console.error("Error fetching image URL:", error);
@@ -26,21 +25,22 @@ function PostPreview({ category, handleDelete, heading, text, image, tags, relea
     fetchImageUrl();
   }, [image]);
 
+  const handlePostClick = () => {
+    router.push(  `/blog/${postTitle}` 
+    //   { 
+    // // pathname: `/blog/${postTitle}` ,
+    // //   query: { postId: id, slug: heading },
+    // }
+    );
+  };
 
   return (
     <div className="postPreview">
-     <Image className="post-image" src={imageUrl} alt="Image" width={240} height={240} /> 
-       
+      <Image className="post-image" src={imageUrl} alt="Image" width={240} height={240} /> 
+
       <div className="right-side-container">
         <div className="title-container">
-        <Link 
-         href={{
-          pathname: `/blog/${postTitle}?postId=${id}`,
-          query: { slug: heading },
-        }}
-         >
-              <h4>{heading}</h4>
-          </Link>
+          <h4 className="link-element" onClick={handlePostClick}>{heading}</h4>
           <div>
             <p className="category">{category}</p>
             {isAdmin && (
@@ -64,10 +64,9 @@ function PostPreview({ category, handleDelete, heading, text, image, tags, relea
       <p className="time-label">{releaseDate}</p>
     </div>
   );
- 
 }
- 
- 
 
-export default PostPreview
+export default PostPreview;
+
+ 
  

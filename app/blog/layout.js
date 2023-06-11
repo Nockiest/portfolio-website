@@ -8,6 +8,7 @@ import BlogHero from '@/components/blog/BlogHero';
 import NextArticlesRow from '@/components/blog/NextArticlesRow';
 import Nav from '@/components/Nav';
 import { useEffect, useState } from 'react';
+import {db, subscribeToBlogPosts } from '../firebase';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,6 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   const [name, setName] = useState('');
   const [profilePic, setProfilePic] = useState('');
+  const [postList, setPostList] = useState([]);
 
   useEffect(() => {
     // Retrieve data from local storage
@@ -34,19 +36,23 @@ export default function RootLayout({ children }) {
     }
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = subscribeToBlogPosts(db, setPostList);
+
+    return () => {
+      unsubscribe(); // Unsubscribe from the snapshot listener
+    };
+  }, []);
+
   return (
     <html lang="en">
       <head>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
-      
       </head>
       <body className={inter.className}>
         {/* <Nav name={name} profilePic={profilePic} /> */}
-        
         {children}
-        <NextArticlesRow />
-    
-      
+        <NextArticlesRow articles={postList} />
       </body>
     </html>
   );

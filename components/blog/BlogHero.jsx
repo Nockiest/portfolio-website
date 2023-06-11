@@ -1,13 +1,15 @@
-import React from 'react'
-import NavList from '../NavList'
+ 
+ 
 
-function BlogHero({classes}) {
+function BlogHero({ classes }) {
+ 
 
   return (
-    <nav className="intro-element" > 
-    <h1>CHAT GPT AND MORE</h1>
+    <nav className="intro-element">
+      
+      <h1>CHAT GPT AND MORE</h1>
     </nav>
-  )
+  );
 }
 
-export default BlogHero
+export default BlogHero;

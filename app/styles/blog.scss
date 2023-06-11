@@ -5,6 +5,16 @@ body{
   margin-top: 0px;
 }
 
+.link-element {
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    font-weight: bold;
+    font-size: 110%;
+  }
+}
+
 .intro-element {
     background-color: $clr-accent;
     height: 25em;
@@ -72,7 +82,8 @@ $search-container-horizontal-padding:24px;
     max-width: $searchBt-width*4 + $search-container-horizontal-padding*2;
     
     background: $clr-light;
-    border: 1px solid #000000;
+    // border: 1px solid #000000;
+    border-radius: 16px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     flex-grow: 0;
@@ -147,7 +158,7 @@ $search-container-horizontal-padding:24px;
    
    
     background: #FFFFFF;
-    border: 1px solid #000000;
+   border-bottom: 1px solid #000000;
   
     display: flex;
     flex-direction: row;
@@ -171,7 +182,7 @@ $search-container-horizontal-padding:24px;
       .title-container{
         @include alignedInRow(space-between)  ;
         padding: 0px 16px;
-        border: 1px solid;
+        // border: 1px solid;
         line-height: 0.8em;
   
         > div {
@@ -184,7 +195,7 @@ $search-container-horizontal-padding:24px;
         display: flex;
         flex-direction: row;
         flex-grow:1;
-        border: solid 1px black;
+        // border: solid 1px black;
         gap: 10px;
         height: 20%;
         > * {
@@ -246,7 +257,7 @@ box-sizing: border-box;
 width: 352px;
 height: 440px;
 background: #FFFFFF;
-border: 1px solid #000000;
+// border: 1px solid #000000;
 border-radius: 8px;
 padding: 8px;
 
@@ -301,22 +312,31 @@ padding: 8px;
 .next-articles-gridContainer {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 10px;
+  gap: 32px;
 }
 
 .next-articles-rectangle {
   position: relative;
   width: 100%;
   padding-bottom: 75%; /* Control the aspect ratio of the rectangles */
+  margin-bottom: 10px; /* Add a margin-bottom for the gap between images */
+  &:hover{
+    cursor: pointer;
+  }
 }
 
 .next-articles-text {
   position: absolute;
   bottom: 0;
   left: 50%;
+   
+  text-align: ceter;
   transform: translateX(-50%);
+  background-color: white; /* Set white background */
+  padding: 10px; /* Add padding to the text */
+  border: 1px solid  $clr-accent; /* Add a border to the text */
+   
 }
-
  
 
 .loginSecttion{

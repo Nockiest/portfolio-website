@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, onSnapshot , query} from "firebase/firestore";
+import { getFirestore, getDoc, doc, updateDoc, collection, onSnapshot , query} from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
 const firebaseConfig = {
@@ -17,14 +17,10 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-// const storage = getStorage();
-// const storageRef = ref(storage, 'images');
-const file = "https://www.google.com/search?q=kitten&sxsrf=APwXEdf22kqYg_npswvQ7bBRVc13rapnBQ:1686069215499&tbm=isch&source=iu&ictx=1&vet=1&fir=istYcz98GWn1rM%252Cxx9Is_ftEERpBM%252C%252Fm%252F0hjzp%253B5UKE_ztEeyAg2M%252CdTDdan6TWTOO-M%252C_%253ByCoPFqqDu6fXGM%252Cvo1Ocq-YkePPhM%252C_%253BzA07E1ZMjNAsgM%252CZ54b0Pd9T-jF2M%252C_%253BB-Gl_6-jdKx4EM%252C-uzr7GKcWawrMM%252C_%253BWj-HITS9Udu5eM%252C0ObwAsOsafiLsM%252C_&usg=AI4_-kTmfYAJ7uB8ga_owv_9uZ2xgwzGTg&sa=X&ved=2ahUKEwjq7p-lia__AhWUSvEDHZxbDlkQ_B16BAhEEAE#imgrc=5UKE_ztEeyAg2M // Get the image file";
-// const imageRef = ref(storageRef, file.name); 
-// const uploadTask = uploadBytes(imageRef, file);
-  
-export { db, auth, provider };
-export const storage = getStorage(app);
+const storage = getStorage(app);
+const colRef = collection(db, 'BlogPosts');
+export { db,colRef, auth, provider, storage };
+
 export const signInWithGoogle = () => {
   signInWithPopup(auth, provider)
     .then((result) => {
@@ -41,7 +37,7 @@ export const signInWithGoogle = () => {
       console.log(error);
     });
 };
- 
+
 export const getUserAuthentication = async () => {
   const user = await new Promise((resolve, reject) => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -52,58 +48,140 @@ export const getUserAuthentication = async () => {
 
   return user;
 };
-// Collection reference
 
 export const checkUserAccess = async () => {
   try {
-    const user = await getUserAuthentication(); // Get the currently signed-in user from Firebase Authentication
+    const user = await getUserAuthentication();
     if (user) {
-      // User is signed in
-      const userEmail = user.email; // Get the email of the signed-in user
-    
-      // Compare the userEmail with the email used to access the Firebase database
+      const userEmail = user.email;
       if (userEmail === 'hanluk@seznam.cz') {
-       // The signed-in user has access to the Firebase database
         console.log('User has access to the Firebase database');
-        return true 
+        return true;
       } else {
-        // The signed-in user does not have access to the Firebase database
         console.log('User does not have access to the Firebase database');
-        return false 
+        return false;
       }
     } else {
-      // No user is signed in
       console.log('No user is signed in');
-      return false 
+      return false;
     }
   } catch (error) {
-    // Handle error
     console.log('Error occurred:', error);
   }
 };
 
 auth.onAuthStateChanged((user) => {
   if (user) {
-    // User is still signed in
     console.log('User is signed in:', user);
   } else {
-    // User has signed out
     console.log('User has signed out');
   }
 });
 
-const colRef = collection(db, 'BlogPosts');
- 
-let posts = [];
+export const fetchPosts = async () => {
+  const colRef = collection(db, 'BlogPosts');
+  const snapshot = await onSnapshot(colRef);
+  const postsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return postsData;
+};
 
- const unsubscribe = onSnapshot(colRef, (snapshot) => {
-  // posts = [];
-  snapshot.docs.forEach((doc) => {
-    posts.push({ ...doc.data(), id: doc.id });
+
+// let unsubscribe;
+
+//   const fetchData = async () => {
+//   return new Promise((resolve, reject) => {
+//     const unsubscribe = onSnapshot(collection(db, 'BlogPosts'), (snapshot) => {
+//       const databasePosts = [];
+//       snapshot.docs.forEach((doc) => {
+//         databasePosts.push({ ...doc.data(), id: doc.id });
+//       });
+//       console.log(databasePosts, 'database contents');
+//       unsubscribe(); // Unsubscribe from the snapshot listener
+//       resolve(databasePosts);
+//     });
+
+//     setTimeout(() => {
+//       unsubscribe(); // Unsubscribe if the timeout expires before the snapshot is received
+//       reject(new Error('Fetching data timed out'));
+//     }, 2000); // Wait for 2 seconds (adjust as needed)
+//   });
+// };
+
+// // Call the fetchData function
+// const DbPosts = await fetchData();
+// console.log(DbPosts, "posts");
+
+export const subscribeToBlogPosts = (db, setPostList) => {
+  const colRef = collection(db, 'BlogPosts');
+
+  const unsubscribe = onSnapshot(colRef, (snapshot) => {
+    const postsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    setPostList(postsData);
+    console.log(postsData, 'posts');
   });
-  console.log(posts, 'Second console.log');
-});
-console.log(posts, "posts");
-export default posts;
+
+  return unsubscribe;
+};
+
+
+export const updateDbComments = async (postId, fieldToUpdate, newValue, parameterIsArray = true) => {
+  console.log(postId, fieldToUpdate, newValue);
+
+  try {
+    const docRef = doc(db, 'BlogPosts', postId);
+    console.log(docRef);
+    const docSnapshot = await getDoc(docRef);
+    console.log(docSnapshot);
+
+    if (docSnapshot.exists()) {
+      const existingData = docSnapshot.data();
+      let updatedData = { ...existingData }; // Create a copy of existingData
+
+      if (parameterIsArray && Array.isArray(newValue)) {
+        // If the field is an array and parameterIsArray is true, set the new value directly
+        updatedData[fieldToUpdate] = newValue;
+      }
+
+      await updateDoc(docRef, updatedData);
+      console.log('Blog post updated successfully!');
+    } else {
+      console.log('Blog post does not exist.');
+    }
+  } catch (error) {
+    console.error('Error updating blog post:', error);
+  }
+};
+
  
 
+// export const updateBlogPost = async (postId, fieldToUpdate, newValue) => {
+//   try {
+//     const postRef = db.collection('BlogPosts').doc(postId);
+//     await postRef.update({
+//       [fieldToUpdate]: newValue
+//     });
+//     console.log('Blog post updated successfully!');
+//   } catch (error) {
+//     console.error('Error updating blog post:', error);
+//   }
+// };
+// const postId = 'd38b0bed-485a-4d8a-9c5d-63a0346c9b60'; // Replace with the actual ID of the document you want to update
+// const fieldToUpdate = 'title'; // Replace with the specific field/key you want to update
+// const newValue = 'Updated Title'; // Replace with the new value for the specified field
+
+// updateBlogPost(postId, fieldToUpdate, newValue);
+
+
+// updateForm.addEventListener('submit', (e) => {
+//   e.preventDefault()
+
+//   let docRef = doc(db, 'BlogPosts', postId)
+
+//   updateDoc(docRef, {
+//     title: 'updated title'
+//   })
+//   .then(() => {
+//     updateForm.reset()
+//   })
+// })
+ 

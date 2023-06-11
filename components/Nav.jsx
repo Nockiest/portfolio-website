@@ -23,22 +23,24 @@ const Nav = ({ absolutePos }) => {
 
   return (
     <header>
-      <div className={`logo`}>
+      <div className="logo" >
         <img src="https://i.postimg.cc/63Cn0Tr3/greenletter-A.jpg" alt="dev And" />
       </div>
       <button className={`nav-toggle`} aria-label="toggle navigation" onClick={toggleNav}>
         <span className={`hamburger`}></span>
       </button>
-      <nav className={`nav`}>
-        <NavList />
-      </nav>
-
+      <div className="right-nav"> 
       {name && profilePic && (
         <div className="user-info">
           <span className="user-name">{name}</span>
           <img src={profilePic} alt="User Profile" className="profile-pic" />
         </div>
       )}
+      <nav className={`nav`}>
+        <NavList />
+      </nav>
+      </div>
+      
     </header>
   );
 };

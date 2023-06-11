@@ -245,6 +245,16 @@ header {
   bottom: 6px;
 }
 
+.user-info{
+  margin-right: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+ 
+.profile-pic{
+  border-radius: 50%;
+}
 /*  Intro section  */
 .intro {
   position: relative;
@@ -504,3 +514,4 @@ h2 {
 
 /* Add more levels as needed */
 
+ 

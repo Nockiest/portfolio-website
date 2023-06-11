@@ -8,10 +8,8 @@ import { signInWithPopup,  signInWithGoogle } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { collection, deleteDoc, doc, getDocs,onSnapshot } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
-import {storage } from "../firebase";
+import {storage, fetchData } from "../firebase";
 import { deleteObject, getDownloadURL, ref } from 'firebase/storage';
- 
- 
  
 import SearchBar from '@/components/blog/SearchBar';
 import SearchClasses from '@/components/blog/SearchClasses';
@@ -25,7 +23,7 @@ import '../styles/globals.scss';
  
 import { getUserAuthentication } from '../firebase';
 import { AuthProvider } from '../AuthContext';
-import posts, { auth, db, provider,checkUserAccess, unsubscribe } from '@/app/firebase';
+import databasePosts, { auth, db, provider,checkUserAccess, unsubscribe, } from '@/app/firebase';
 import { helmetBattle } from 'fontawesome';
  
 const BlogPage = () => {
@@ -45,18 +43,19 @@ const BlogPage = () => {
  
     useEffect(() => {
       const colRef = collection(db, 'BlogPosts');
+      console.log(databasePosts)
       const unsubscribe = onSnapshot(colRef, (snapshot) => {
-        const postsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-        setPostList(postsData);
-        console.log(postsData, 'Second console.log');
-      });
+       const postsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+         setPostList(postsData);
+         console.log(postsData, 'Second console.log');
+       });
   
       return () => {
         unsubscribe(); // Unsubscribe from the snapshot listener
       };
-    }, []);
+    }, [ ]);
  
-
+ 
   const handleSearch = (searchText) => {
     setQuery(searchText);
   };
@@ -89,22 +88,7 @@ const BlogPage = () => {
     }
   };
 
-  const handleUpdateProfile = () => {
-    if (user) {
-      user
-        .updateProfile({
-          displayName: 'New Display Name',
-          photoURL: 'https://example.com/new-profile-pic.jpg',
-        })
-        .then(() => {
-          console.log('Profile updated successfully.');
-        })
-        .catch((error) => {
-          console.error('Error updating profile:', error);
-        });
-    }
-  };
-
+    
   useEffect(() => {
     const checkUserAccessAndSetIsAdmin = async () => {
       try {
@@ -181,7 +165,7 @@ const BlogPage = () => {
       const hasSearchedTerm =
         query === '' ||
         post.title.toLowerCase().includes(query.toLowerCase()) ||
-        post.body.toLowerCase().includes(query.toLowerCase());
+        post.postText.toLowerCase().includes(query.toLowerCase());
       const hasSelectedCategory =
         selectedCategory === '' || post.category === selectedCategory;
 
@@ -215,7 +199,7 @@ const BlogPage = () => {
         </section>
         
         <section className="bodycontainer">
-        <div className="postpreviewcontainer">
+       {filteredPosts.length > 0 && <div className="postpreviewcontainer">
         {/* <Image src={imageUrl} alt="Image" width={240} height={240} /> */}
           {filteredPosts.map((post, index) => (
             <PostPreview
@@ -231,7 +215,7 @@ const BlogPage = () => {
               category={post.category}
             />
           ))}
-        </div>
+        </div>}
         <TagBar selectedTags={selectedTags} handleTagSelection={handleTagSelection} />
       </section>
 
@@ -254,3 +238,18 @@ const BlogPage = () => {
 export default BlogPage;
 
 
+// const handleUpdateProfile = () => {
+  //   if (user) {
+  //     user
+  //       .updateProfile({
+  //         displayName: 'New Display Name',
+  //         photoURL: 'https://example.com/new-profile-pic.jpg',
+  //       })
+  //       .then(() => {
+  //         console.log('Profile updated successfully.');
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error updating profile:', error);
+  //       });
+  //   }
+  // };

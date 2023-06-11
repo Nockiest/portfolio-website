@@ -24,10 +24,9 @@ export default function RootLayout({ children }) {
           
           {/* <Nav absolutePos={true}/>  */}
          
-           <BlogHero />
-             
-         {children}
-         <Footer />
+           <BlogHero />     
+           {children}
+           {/* <Footer /> */}
           </body>
           
       </html>

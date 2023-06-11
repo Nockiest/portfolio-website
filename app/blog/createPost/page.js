@@ -1,8 +1,8 @@
 "use client"
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import React, { useState, useEffect } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import {storage,  db, auth } from "../../firebase";
+import {serverTimestamp, addDoc, collection } from "firebase/firestore";
+import {storage, colRef, db, auth } from "../../firebase";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,8 +14,7 @@ function CreatePost({ isAuth }) {
   const [imageUpload, setImageUpload] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-
-  const postsCollectionRef = collection(db, "BlogPosts");
+  
 
   const handleTagChange = (event) => {
     const enteredTags = event.target.value.split(",").map((tag) => tag.trim());
@@ -40,14 +39,16 @@ function CreatePost({ isAuth }) {
   
   const createPost = async () => {
     const postId = uuidv4();
+    const timeStamp = serverTimestamp();
     // Create the blog post document
-    const docRef = await addDoc(postsCollectionRef, {
+    const docRef = await addDoc(colRef, {
       title,
       postText,
       tags: selectedTags,
       category: selectedCategory,
       postId,
       author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
+      timeStamp:timeStamp,
     });
     uploadFile(postId)
     // Clear input fields
