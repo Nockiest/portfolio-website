@@ -6,7 +6,6 @@ import InformationBar from "@/components/blog/post/InformationBar";
 import CommentForm from "@/components/blog/post/Comment";
 import CommentList from "@/components/blog/post/CommentList";
 // import NextArticlesRow from "@/components/blog/NextArticlesRow";
-// import RootLayout from "./layout"
 import BlogHero from "@/components/blog/BlogHero";
 import {useState, useEffect} from "react" ;
 import  { auth, db, provider,checkUserAccess, unsubscribe,subscribeToBlogPosts  } from '@/app/firebase';

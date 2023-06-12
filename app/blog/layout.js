@@ -6,7 +6,7 @@ import NextArticlesRow from '@/components/blog/NextArticlesRow';
 import Nav from '@/components/Nav';
 //import React { useEffect, useState } from 'react';
 import {db, subscribeToBlogPosts } from '../firebase';
-import { AuthContext, AuthProvider } from '../AuthContext';
+// import { AuthContext, AuthProvider } from '../AuthContext';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,12 +21,12 @@ export default function RootLayout({ children }) {
       <head>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
       </head>
-      <AuthProvider>
+      {/* <AuthProvider> */}
           <body className={inter.className}>
             {children}
             <NextArticlesRow  />
           </body>
-    </AuthProvider>
+    {/* </AuthProvider> */}
   
     </html>
   );

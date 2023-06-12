@@ -6,20 +6,20 @@ import { useEffect, useState } from 'react';
 import NavList from './NavList';
 const Nav = ({ absolutePos }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [profilePic, setProfilePic] = useState('');
+  // const [name, setName] = useState('');
+  // const [profilePic, setProfilePic] = useState('');
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
     console.log(isNavOpen);
   };
 
-  useEffect(() => {
-    const storedName = localStorage.getItem('name');
-    const storedProfilePic = localStorage.getItem('profilePic');
-    setName(storedName || '');
-    setProfilePic(storedProfilePic || '');
-  }, [name, profilePic]);
+  // useEffect(() => {
+  //   const storedName = localStorage.getItem('name');
+  //   const storedProfilePic = localStorage.getItem('profilePic');
+  //   setName(storedName || '');
+  //   setProfilePic(storedProfilePic || '');
+  // }, [name, profilePic]);
 
   return (
     <header>
@@ -30,12 +30,12 @@ const Nav = ({ absolutePos }) => {
         <span className={`hamburger`}></span>
       </button>
       <div className="right-nav"> 
-      {name && profilePic && (
+      {/* {name && profilePic && (
         <div className="user-info">
           <span className="user-name">{name}</span>
           <img src={profilePic} alt="User Profile" className="profile-pic" />
         </div>
-      )}
+      )} */}
       <nav className={`nav`}>
         <NavList />
       </nav>
