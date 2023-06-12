@@ -54,12 +54,6 @@ const BlogPage = () => {
       };
     }, []);
  
-    // useEffect(() => {
-    //   // if (!user && name) {
-    //     window.location.reload();
-    //   // }
-    // }, [user]);
-
   const handleSearch = (searchText) => {
     setQuery(searchText);
   };
