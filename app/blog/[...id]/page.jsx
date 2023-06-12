@@ -1,12 +1,12 @@
 "use client"
 import "../../styles/post.scss"  
 import { useRouter,usePathname  } from 'next/navigation';
-import TextBody from "@/components/blog/post/Textbody"; //tohle možná nebude ani potřeba
+// import TextBody from "@/components/blog/post/Textbody"; //tohle možná nebude ani potřeba
 import InformationBar from "@/components/blog/post/InformationBar";
 import CommentForm from "@/components/blog/post/comment";
 import CommentList from "@/components/blog/post/CommentList";
-import NextArticlesRow from "@/components/blog/NextArticlesRow";
-import RootLayout from "./layout"
+// import NextArticlesRow from "@/components/blog/NextArticlesRow";
+// import RootLayout from "./layout"
 import BlogHero from "@/components/blog/BlogHero";
 import {useState, useEffect} from "react" ;
 import databasePosts, { auth, db, provider,checkUserAccess, unsubscribe,subscribeToBlogPosts  } from '@/app/firebase';
