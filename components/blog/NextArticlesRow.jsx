@@ -46,7 +46,7 @@ const NextArticlesRow = () => {
       setChosenArticlesData(resolvedArticleData.filter(Boolean));
     };
   
-     
+    console.log("hello")
     fetchArticleImages();
   }, [filteredArticles]);
   
