@@ -1,5 +1,4 @@
 import React from 'react'
-// import Nav from "@components/Nav";
 import "../../styles/globals.scss"  
 import Footer from "../../../components/Footer";
 import { Inter } from 'next/font/google';

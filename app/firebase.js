@@ -85,9 +85,12 @@ export const fetchPosts = async () => {
   return postsData;
 };
 
-export default defaultFunction = () => {
-  console.log("hello")
-}
+const defaultFunction = () => {
+  console.log("hello");
+};
+
+export default defaultFunction;
+
 // let unsubscribe;
 
 //   const fetchData = async () => {

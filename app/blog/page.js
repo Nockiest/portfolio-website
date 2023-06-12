@@ -23,6 +23,8 @@ import BlogHero from '@/components/blog/BlogHero';
 import '../styles/globals.scss';
 import { helmetBattle } from 'fontawesome';
  
+import { AuthContext, AuthProvider } from '../AuthContext';
+
 const BlogPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -50,9 +52,14 @@ const BlogPage = () => {
       return () => {
         unsubscribe(); // Unsubscribe from the snapshot listener
       };
-    }, [ ]);
+    }, []);
  
- 
+    // useEffect(() => {
+    //   // if (!user && name) {
+    //     window.location.reload();
+    //   // }
+    // }, [user]);
+
   const handleSearch = (searchText) => {
     setQuery(searchText);
   };
@@ -78,6 +85,7 @@ const BlogPage = () => {
           if (user.email="hanluk@seznam.cz") {
             setIsAdministrator(true);
           }
+        
         });
       });
     } catch (error) {
@@ -171,7 +179,8 @@ const BlogPage = () => {
   }, [selectedTags, query, postLists, selectedCategory]);
  
   return (
-    <div>
+    <AuthProvider>
+ <div>
       <Head>
         <title>Blog Page</title>
  
@@ -229,6 +238,8 @@ const BlogPage = () => {
         {/* Footer content goes here  }
       </footer> */} 
     </div>  
+</AuthProvider>
+    
   );
 };
 

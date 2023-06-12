@@ -7,19 +7,19 @@ import GoogleButton from "../partial/GoogleButton";
 export default function LoginButton({ user, isAdmin, setIsAdmin}) {
     const [errorMessage, setErrorMessage] = useState("");
     const handleSignInWithGoogle = async () => {
-        
-        try {
-          await signInWithGoogle();
-          
-        } catch (error) {
-          setErrorMessage('Error signing in with Google.');
-        }
+      try {
+        await signInWithGoogle();
+    
+      } catch (error) {
+        setErrorMessage('Error signing in with Google.');
+      }
       };
       const handleSignOut = async () => {
         try {
           setIsAdmin(false) 
           localStorage.clear();  
           console.log(localStorage.getItem('name'), localStorage.getItem('profilePic'),"xxx")
+          window.location.reload();
           await auth.signOut();
           
           
