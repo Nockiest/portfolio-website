@@ -3,13 +3,13 @@ import "../../styles/post.scss"
 import { useRouter,usePathname  } from 'next/navigation';
 // import TextBody from "@/components/blog/post/Textbody"; //tohle možná nebude ani potřeba
 import InformationBar from "@/components/blog/post/InformationBar";
-import CommentForm from "@/components/blog/post/comment";
+import CommentForm from "@/components/blog/post/Comment";
 import CommentList from "@/components/blog/post/CommentList";
 // import NextArticlesRow from "@/components/blog/NextArticlesRow";
 // import RootLayout from "./layout"
 import BlogHero from "@/components/blog/BlogHero";
 import {useState, useEffect} from "react" ;
-import databasePosts, { auth, db, provider,checkUserAccess, unsubscribe,subscribeToBlogPosts  } from '@/app/firebase';
+import  { auth, db, provider,checkUserAccess, unsubscribe,subscribeToBlogPosts  } from '@/app/firebase';
 import {  collection, deleteDoc, doc, getDocs,onSnapshot } from 'firebase/firestore';
  import { updateDbComments } from "@/app/firebase";
  import { v4 as uuidv4 } from 'uuid';

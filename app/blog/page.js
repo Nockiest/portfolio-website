@@ -4,11 +4,12 @@ import Head from 'next/head';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { signInWithPopup,  signInWithGoogle } from 'firebase/auth';
+import { signInWithPopup } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { collection, deleteDoc, doc, getDocs,onSnapshot } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
-import {storage, fetchData } from "../firebase";
+import { auth, db, provider,checkUserAccess, unsubscribe, signInWithGoogle, storage, fetchData, getUserAuthentication  } from '@/app/firebase'; 
+
 import { deleteObject, getDownloadURL, ref } from 'firebase/storage';
  
 import SearchBar from '@/components/blog/SearchBar';
@@ -20,10 +21,6 @@ import Nav from '@/components/Nav';
 import BlogHero from '@/components/blog/BlogHero';
 
 import '../styles/globals.scss';
- 
-import { getUserAuthentication } from '../firebase';
-import { AuthProvider } from '../AuthContext';
-import databasePosts, { auth, db, provider,checkUserAccess, unsubscribe, } from '@/app/firebase';
 import { helmetBattle } from 'fontawesome';
  
 const BlogPage = () => {
@@ -43,7 +40,7 @@ const BlogPage = () => {
  
     useEffect(() => {
       const colRef = collection(db, 'BlogPosts');
-      console.log(databasePosts)
+     
       const unsubscribe = onSnapshot(colRef, (snapshot) => {
        const postsData = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
          setPostList(postsData);
