@@ -36,7 +36,7 @@ const NavList = () => {
   return (
     <ul className="nav__list">
       <li className="nav__item">
-  <Link href="/#home" className="nav__link"  >
+  <Link href="/" className="nav__link"  >
         Home
       </Link>
       </li>

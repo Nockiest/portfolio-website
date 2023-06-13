@@ -5,12 +5,12 @@ const Services = () => {
         <div className="services">
           <div className="service">
             <h3>Javascript</h3>
-            <p>The first time we got to code our own school canteneens website during our IT lesson, I fell in love with the world of computers. My website was nothing outstanding honestly, but it didn't discourage me. Now it is over a year and I have moved quite a lot on my journey to become a competent web dev.</p>
+            <p>The first time we got to code our own school canteneens website during our IT lesson, I fell in love with the world of computers. My website was nothing outstanding honestly  It was barely a website , but it didn't discourage me. Now it is over a year and I have moved quite a lot on my journey to become a competent web dev.</p>
           </div>
   
           <div className="service">
-            <h3>Food Styling</h3>
-            <p>As a runner, I have a great energy expenditure, which I have to compensate for using the contents of our fridge. Because it is hard to eat such quantities of food, I was forced by the circumstances to make some quality food. I am keeping up a breakfast channel, where I upload my breakfasts in weekly intervals.</p>
+            <h3>Web Development</h3>
+            <p>I'm passionate about web development, crafting stunning websites with Figma and Next.js. With a focus on frontend using Next.js, I create dynamic and interactive web applications. Using Figma, I design intuitive interfaces and captivating visuals. Additionally, I excel in backend development with Firebase, building secure and scalable serverless applications. If you have a project in mind, let's collaborate to create remarkable digital experiences.</p>
           </div>
   
           <div className="service">

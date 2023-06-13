@@ -17,4 +17,18 @@ module.exports = {
   images: {
     domains: ['firebasestorage.googleapis.com'],
   },
+  compiler: {
+    styledComponents: {
+      displayName: true,
+      ssr: true,
+      fileName: true,
+      topLevelImportPaths: [],
+      meaninglessFileNames: ["index"],
+      cssProp: true,
+      namespace: "",
+      minify: false,
+      transpileTemplateLiterals: false,
+      pure: false,
+    },
+  },
 };

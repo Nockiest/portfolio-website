@@ -12,7 +12,7 @@ const About = () => {
          <p>I'm excited to see where my interests in coding and food styling take me in the future, and I hope to continue learning and exploring new things along the way.</p>
        </div>
  
-       <Image src="/img/dev-jane-02.jpg" alt="Andrew in his coding hideout" className="about-me__img" width={400} height={300} />
+       <img src="https://i.postimg.cc/L601592S/20220414-111812.jpg" alt="Andrew in his coding hideout" className="about-me__img" width={400} height={300} />
      </section>
    );
  };
