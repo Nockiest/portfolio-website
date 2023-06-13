@@ -4,11 +4,11 @@ import React, {useState, useEffect} from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '@/app/firebase';
 import { useRouter } from 'next/navigation';
-// import { AuthContext, AuthProvider } from '@/app/AuthContext';
+import { AuthContext, AuthProvider } from '@/app/AuthContext';
 import { useContext } from 'react';
 const NextArticlesRow = () => {
 
-  // const { postList } = useContext(AuthContext);
+  const { postList } = useContext(AuthContext);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [chosenArticlesData, setChosenArticlesData] = useState([]);
   const router = useRouter();
@@ -50,16 +50,16 @@ const NextArticlesRow = () => {
     fetchArticleImages();
   }, [filteredArticles]);
   
-  // useEffect(() => {
-  //   const selectFirstFourArticles = () => {
-  //     const chosenArticles = postList.slice(0, 4);
-  //     setFilteredArticles(chosenArticles);
-  //   };
+  useEffect(() => {
+    const selectFirstFourArticles = () => {
+      const chosenArticles = postList.slice(0, 4);
+      setFilteredArticles(chosenArticles);
+    };
   
-  //   if (postList && postList.length >= 4) {
-  //     selectFirstFourArticles();
-  //   }
-  // }, [postList]);
+    if (postList && postList.length >= 4) {
+      selectFirstFourArticles();
+    }
+  }, [postList]);
 
   const handleArticleClick = (title) => {
     const URLFriendlyTitle = title.replace(/\s+/g, '-').toLowerCase(); // Generate the post title for the URL

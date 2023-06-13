@@ -1,5 +1,4 @@
 import React from 'react'
-// import styles from './searchClasses.module.scss';
 
 const SearchClasses = ({ handleCategorySelection, selectedCategory }) => {
   return (

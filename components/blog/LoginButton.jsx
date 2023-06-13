@@ -7,26 +7,26 @@ import GoogleButton from "../partial/GoogleButton";
 export default function LoginButton({ user, isAdmin, setIsAdmin}) {
     const [errorMessage, setErrorMessage] = useState("");
     const handleSignInWithGoogle = async () => {
-      // try {
-      //   await signInWithGoogle();
+      try {
+        await signInWithGoogle();
     
-      // } catch (error) {
-      //   setErrorMessage('Error signing in with Google.');
-      // }
+      } catch (error) {
+        setErrorMessage('Error signing in with Google.');
+      }
       };
       const handleSignOut = async () => {
-        // try {
-        //   setIsAdmin(false) 
-        //   localStorage.clear();  
-        //   console.log(localStorage.getItem('name'), localStorage.getItem('profilePic'),"xxx")
-        //   window.location.reload();
-        //   await auth.signOut();
+        try {
+          setIsAdmin(false) 
+          localStorage.clear();  
+          console.log(localStorage.getItem('name'), localStorage.getItem('profilePic'),"xxx")
+          window.location.reload();
+          await auth.signOut();
           
           
-        // } catch (error) {
-        //   // Handle sign out error
-        //   console.error('Error signing out:', error);
-        // }
+        } catch (error) {
+          // Handle sign out error
+          console.error('Error signing out:', error);
+        }
       };
       const logoutButtonStyles = {
         backgroundColor: '#fff',
@@ -53,7 +53,6 @@ export default function LoginButton({ user, isAdmin, setIsAdmin}) {
          <p>
           {!user ? (
             <p></p>
-            // <strong>Sign In With Google to Continue</strong>
           ) : (
             <strong>Logged in as: {user.displayName}</strong>
           )}

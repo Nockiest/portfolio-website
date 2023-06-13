@@ -23,7 +23,7 @@ import BlogHero from '@/components/blog/BlogHero';
 import '../styles/globals.scss';
 import { helmetBattle } from 'fontawesome';
  
-// import { AuthContext, AuthProvider } from '../AuthContext';
+import { AuthContext, AuthProvider } from '../AuthContext';
 
 const BlogPage = () => {
   const [name, setName] = useState('');
@@ -31,8 +31,8 @@ const BlogPage = () => {
   const [isAdministrator, setIsAdministrator] = useState(false)
   const [profilePic, setProfilePic] = useState('');
   const [isAuth, setIsAuth] = useState(false);
-  const [postLists, setPostList] = useState([] );//[...articles]
-  // const [user] = useAuthState(auth);
+  const [postLists, setPostList] = useState([] ); 
+  const [user] = useAuthState(auth);
   const [userData, setUserData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
@@ -72,34 +72,34 @@ const BlogPage = () => {
         setSelectedTags([...selectedTags, tag]);
       }
   };
-  // const handleSignInWithGoogle = async () => {
-  //   try {
-  //     await signInWithGoogle().then(() => {
-  //       checkUserAccess().then((isAdmin) => {
-  //         if (user.email="hanluk@seznam.cz") {
-  //           setIsAdministrator(true);
-  //         }
+  const handleSignInWithGoogle = async () => {
+    try {
+      await signInWithGoogle().then(() => {
+        checkUserAccess().then((isAdmin) => {
+          if (user.email="hanluk@seznam.cz") {
+            setIsAdministrator(true);
+          }
         
-  //       });
-  //     });
-  //   } catch (error) {
-  //     setErrorMessage('Error signing in with Google.');
-  //   }
-  // };
+        });
+      });
+    } catch (error) {
+      setErrorMessage('Error signing in with Google.');
+    }
+  };
 
     
-  // useEffect(() => {
-  //   const checkUserAccessAndSetIsAdmin = async () => {
-  //     try {
-  //       const hasAccess = await checkUserAccess();
-  //       setIsAdministrator(hasAccess);
-  //     } catch (error) {
-  //       console.log('Error occurred:', error);
-  //     }
-  //   };
+  useEffect(() => {
+    const checkUserAccessAndSetIsAdmin = async () => {
+      try {
+        const hasAccess = await checkUserAccess();
+        setIsAdministrator(hasAccess);
+      } catch (error) {
+        console.log('Error occurred:', error);
+      }
+    };
   
-  //   checkUserAccessAndSetIsAdmin();
-  // }, [user]);
+    checkUserAccessAndSetIsAdmin();
+  }, [user]);
 
   useEffect(() => {
     const storedName = localStorage.getItem('name');
@@ -173,7 +173,7 @@ const BlogPage = () => {
   }, [selectedTags, query, postLists, selectedCategory]);
  
   return (
-    
+    <AuthProvider> 
  <div>
       <Head>
         <title>Blog Page</title>
@@ -195,7 +195,7 @@ const BlogPage = () => {
          <SearchClasses handleCategorySelection={handleCategorySelection}
          selectedCategory={selectedCategory} />
           
-         {/* <LoginButton user={user} isAdmin={isAdministrator} setIsAdmin={setIsAdministrator}  /> */}
+         <LoginButton user={user} isAdmin={isAdministrator} setIsAdmin={setIsAdministrator}  />
         </section>
         
         <section className="bodycontainer">
@@ -232,7 +232,7 @@ const BlogPage = () => {
         {/* Footer content goes here  }
       </footer> */} 
     </div>  
- 
+    </AuthProvider>
     
   );
 };
