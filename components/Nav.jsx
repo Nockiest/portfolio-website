@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import NavList from './NavList';
-const Nav = ({ absolutePos }) => {
+import { blog } from 'fontawesome';
+const Nav = ({ blogVersion=true }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [name, setName] = useState('');
   const [profilePic, setProfilePic] = useState('');
@@ -19,6 +20,7 @@ const Nav = ({ absolutePos }) => {
     const storedProfilePic = localStorage.getItem('profilePic');
     setName(storedName || '');
     setProfilePic(storedProfilePic || '');
+    console.log(blogVersion)
   }, [name, profilePic]);
 
   return (
@@ -30,7 +32,7 @@ const Nav = ({ absolutePos }) => {
         <span className={`hamburger`}></span>
       </button>
       <div className="right-nav"> 
-      {name && profilePic && (
+      {name && blogVersion === true && profilePic && (
         <div className="user-info">
           <span className="user-name">{name}</span>
           <img src={profilePic} alt="User Profile" className="profile-pic" />

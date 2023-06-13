@@ -1,18 +1,19 @@
-// NavList.js
 "use client"
-import React, {useEffect} from "react"
-import Link from 'next/link';
+import React, { useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 const NavList = () => {
+  const router = useRouter();
+
   useEffect(() => {
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelectorAll('.nav__link');
 
     const handleNavToggle = () => {
-      console.log("toggling")
       document.body.classList.toggle('nav-open');
     };
-
     const handleNavLinkClick = () => {
       document.body.classList.remove('nav-open');
     };
@@ -31,28 +32,26 @@ const NavList = () => {
       });
     };
   }, []);
-
-
-
+ 
   return (
     <ul className="nav__list">
       <li className="nav__item">
-        <Link href="#home" className="nav__link">
-          Home
-        </Link>
+  <Link href="/#home" className="nav__link"  >
+        Home
+      </Link>
       </li>
       <li className="nav__item">
-        <Link href="#services" className="nav__link">
+        <Link href="/#services" className="nav__link"  >
           My Services
         </Link>
       </li>
       <li className="nav__item">
-        <Link href="#about" className="nav__link">
-          About me
+        <Link href="/#about" className="nav__link" >
+          About Me
         </Link>
       </li>
       <li className="nav__item">
-        <Link href="#work" className="nav__link">
+        <Link href="/#work" className="nav__link"  >
           My Work
         </Link>
       </li>
@@ -64,5 +63,4 @@ const NavList = () => {
     </ul>
   );
 };
-
-export default NavList;
+export default NavList

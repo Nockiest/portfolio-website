@@ -405,6 +405,16 @@ header {
   opacity: 0.5;
 }
 
+.portfolio {
+  display: flex;
+  justify-content: center;
+}
+
+.portfolio__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 /* footer */
 .footer {
   background: #111;
